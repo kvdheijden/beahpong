@@ -1,0 +1,29 @@
+/*
+ * Device tree overlay for the beahpong table LED controller
+ *
+ * To compile this file, use:
+ * dtc -@ -I dts -O dtb -o beahpong.dtbo beahpong.dts
+ */
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835", "brcm,bcm2711";
+
+	fragment@0 {
+		target = <&gpio>;
+		beahpong: __overlay__ {
+			compatible = "beahpong";
+
+			// Bit 0: 0 = active high, 1 = active low
+			// Bit 1: 0 = push-pull, 1 = single ended
+			// BIT 2: 0 = open source, 1 = open drain
+			// BIT 3: 0 = maintained during low-power, 1 = lost during low-power
+			// BIT 4: 0 = no pull up, 1 = weak pull up (input only)
+			// BIT 5: 0 = no pull down, 1 = weak pull down (input only)
+			dout_fb-gpios = <&gpio 17 0>;
+			dout_p1-gpios = <&gpio 18 0>;
+			dout_p2-gpios = <&gpio 19 0>;
+		};
+	};
+};
