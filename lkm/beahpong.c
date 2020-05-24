@@ -6,6 +6,8 @@
 
 #define DRIVER_NAME "beahpong"
 
+#define UNUSED(x) ((void)x)
+
 #define T0H	350	// ns
 #define T1H	900	// ns
 #define T0L	900	// ns
@@ -57,13 +59,15 @@ static void beahpong_deferred_io(struct fb_info *info, struct list_head *pagelis
 {
 	int i, j;
 	struct beahpong_par *par = info->par;
-	u8 *vmem = info->screen_base;
+	char *vmem = info->screen_base;
+
+    UNUSED(pagelist);
 
 	beahpong_reset(par);
 	for (i = 0; i < info->fix.smem_len; i++) {
 		for (j = 0; j < 8; j++) {
-			beahpong_set(par, (vmem[i] >> j) & 0x01);
-		}
+            beahpong_set(par, (vmem[i] >> j) & 0x01);
+        }
 	}
 }
 
@@ -94,6 +98,8 @@ static ssize_t beahpong_write(struct fb_info *info, const char __user *buf, size
 
 static int beahpong_setcolreg(unsigned regno, unsigned red, unsigned green, unsigned blue, unsigned transp, struct fb_info *info)
 {
+    UNUSED(transp);
+
 	if (info->fix.visual == FB_VISUAL_TRUECOLOR && regno < 16) {
 		u32 *palette = info->pseudo_palette;
 
@@ -109,6 +115,9 @@ static int beahpong_setcolreg(unsigned regno, unsigned red, unsigned green, unsi
 
 static int beahpong_blank(int blank, struct fb_info *info)
 {
+    UNUSED(blank);
+    UNUSED(info);
+
 	return -EINVAL;
 }
 
@@ -153,8 +162,8 @@ static struct fb_info *beahpong_framebuffer_alloc(struct platform_device *pdev)
 	struct beahpong_par *par = NULL;
 	struct fb_ops *fbops = NULL;
 	struct fb_deferred_io *fbdefio = NULL;
-	u8 *vmem = NULL;
-	u32 vmem_size = 0;
+	char *vmem = NULL;
+	u32 vmem_size;
 
 	// Get device parameters
 	dout_fb = devm_gpiod_get(dev, "dout_fb", GPIOD_OUT_HIGH);
@@ -203,7 +212,8 @@ static struct fb_info *beahpong_framebuffer_alloc(struct platform_device *pdev)
 		goto alloc_failed;
 	}
 
-	info->screen_base = (u8 __force __iomem *) vmem;
+	info->screen_base = (char __force __iomem *) vmem;
+	info->screen_size = vmem_size;
 	info->fbops = fbops;
 	info->fbdefio = fbdefio;
 
@@ -273,7 +283,7 @@ static void beahpong_framebuffer_release(struct fb_info *info)
 static int beahpong_register_framebuffer(struct platform_device *pdev, struct fb_info *info)
 {
 	struct device *dev = &pdev->dev;
-	int status = 0;
+	int status;
 
 	status = register_framebuffer(info);
 	if (status < 0) {
@@ -300,7 +310,7 @@ static int beahpong_unregister_framebuffer(struct platform_device *pdev)
 	unregister_framebuffer(info);
 	platform_set_drvdata(pdev, NULL);
 
-	// Return succesfully
+	// Return successfully
 	return 0;
 }
 
@@ -308,7 +318,7 @@ static int beahpong_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct fb_info *info = NULL;
-	int status = 0;
+	int status;
 
 	info = beahpong_framebuffer_alloc(pdev);
 	if (!info) {
@@ -325,7 +335,7 @@ static int beahpong_probe(struct platform_device *pdev)
 
 	dev_info(dev, "Device probed successfully\n");
 
-	// Return succesfully
+	// Return successfully
 	return 0;
 
 	// Error handling
@@ -339,7 +349,7 @@ static int beahpong_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct fb_info *info = NULL;
-	int status = 0;
+	int status;
 
 	info = platform_get_drvdata(pdev);
 	if (!info) {
@@ -355,9 +365,9 @@ static int beahpong_remove(struct platform_device *pdev)
 
 	beahpong_framebuffer_release(info);
 
-	dev_info(dev, "Device removed succesfully\n");
+	dev_info(dev, "Device removed successfully\n");
 
-	// Return succesfully
+	// Return successfully
 	return 0;
 }
 
@@ -378,7 +388,7 @@ static struct platform_driver beahpong_driver = {
 	}
 };
 
-module_platform_driver(beahpong_driver);
+module_platform_driver(beahpong_driver)
 
 MODULE_AUTHOR("Koen van der Heijden <koen@kvdheijden.com>");
 MODULE_DESCRIPTION("Driver for the Beahpong table");

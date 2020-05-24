@@ -7,6 +7,8 @@
 /dts-v1/;
 /plugin/;
 
+#include "dt-bindings/gpio/gpio.h"
+
 / {
 	compatible = "brcm,bcm2835", "brcm,bcm2711";
 
@@ -22,9 +24,9 @@
 				// BIT 3: 0 = maintained during low-power, 1 = lost during low-power
 				// BIT 4: 0 = no pull up, 1 = weak pull up (input only)
 				// BIT 5: 0 = no pull down, 1 = weak pull down (input only)
-				dout_fb-gpios = <&gpio 17 0>;
-				dout_p1-gpios = <&gpio 18 0>;
-				dout_p2-gpios = <&gpio 19 0>;
+				dout_fb-gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+				dout_p1-gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
+				dout_p2-gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
 			};
 		};
 	};
