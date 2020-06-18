@@ -1,6 +1,6 @@
 EESchema-DOCLIB  Version 2.0
 #
-$CMP CAT24C32
+$CMP CAT24C32WI−GT3
 D EEPROM Serial 32-Kb I2C
 F https://www.onsemi.com/pub/Collateral/CAT24C32-D.PDF
 $ENDCMP
@@ -11,7 +11,13 @@ F https://www.diodes.com/assets/Datasheets/DMG2305UX.pdf
 $ENDCMP
 #
 $CMP DMMT5401
-F 150V DUAL PNP SMALL SIGNAL SURFACE MOUNT TRANSISTOR
+D 150V DUAL PNP SMALL SIGNAL SURFACE MOUNT TRANSISTOR
+F https://www.diodes.com/assets/Datasheets/ds30437.pdf
+$ENDCMP
+#
+$CMP NVT2008PW
+D Bidirectional voltage-level translator for open-drain and push-pull applications
+F https://www.nxp.com/docs/en/data-sheet/NVT2008_NVT2010.pdf
 $ENDCMP
 #
 #End Doc Library
